@@ -21,7 +21,6 @@ for i,row in inpDF.iterrows():
 	year_wise[year][category] += 1
 	if category not in categories:
 		categories.append(category)
-
 # print categories 
 
 x_axis = year_wise.keys()
@@ -46,18 +45,19 @@ colors = {'Communication' : '#5d95ef',
   'Offers' : '#abe554',
   'Cloud' : '#40e878' }
 
-
-xtab = [pair[0] for pair in pairs]
+xtab = [int(pair[0])+float(i%3)/10 for i,pair in enumerate(pairs)]
+year = [pair[0] for pair in pairs]
 ytab = [pair[1] for pair in pairs]
-stab = [size*6 for size in ytab]
+stab = [size*8 for size in ytab]
 ctab = [colors[pair[2]] for pair in pairs]
 desc = [pair[2] for pair in pairs]
 
-
+print xtab
 source = ColumnDataSource(
         data=dict(
             x=xtab,
             y=ytab,
+            year=year,
             color=ctab,
             size=stab,
             desc=desc,
@@ -68,7 +68,7 @@ hover = HoverTool(
         tooltips="""
         <div>
             <span style="font-size: 17px; font-weight: bold;">@desc</span> <br>
-            <span style="font-size: 17px; font-weight: bold;">Count: @y</span>
+            <span style="font-size: 17px; font-weight: bold;">Companies: @y, year: @year</span>
         </div>
         """
     )
@@ -76,7 +76,7 @@ hover = HoverTool(
 output_file("google.html")
 p = figure(plot_width=1500, plot_height=900, tools=[hover], title="Google Acquisitions over time")
 
-p.circle('x', 'y', size='size', color='color', source=source)
+p.circle('x', 'y', size='size', color='color',alpha=0.5, source=source)
 # p.circle(xtab, ytab, size=stab, color=ctab, alpha=0.5)
 
 p.xgrid.grid_line_color = None
