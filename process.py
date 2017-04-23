@@ -83,3 +83,8 @@ p.xgrid.grid_line_color = None
 p.ygrid.grid_line_color = None
 
 show(p)
+
+# fix scatter 
+# create heat map - year wise category wise counts
+# plot $ amounts on map 
+# time series of all companies 
