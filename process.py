@@ -3,7 +3,7 @@ from bokeh.models import HoverTool
 import pandas as pd 
 
 ## read the data from CSV and create DF
-inpDF = pd.read_csv("derived_data.csv")
+inpDF = pd.read_csv("data/derived_data.csv")
 
 ## Separate Categories and Year Wise Acquisitions
 categories = []
@@ -72,6 +72,7 @@ p.ygrid.grid_line_color = None
 
 show(p)
 
+# Create a storyline !!! 
 # fix scatter 
 # create heat map - year wise category wise counts
 # plot $ amounts on map 
