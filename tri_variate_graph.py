@@ -74,6 +74,6 @@ show(p)
 
 # Create a storyline !!! 
 # fix scatter 
-# create heat map - year wise category wise counts
+
 # plot $ amounts on map 
 # time series of all companies 
