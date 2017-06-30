@@ -30,19 +30,34 @@ def dataset_preparation(row_data, upper_y):
 			each.append(upper_y - 3)
 			each.append(1)
 
-		
 		dataset.append(each)
 	return dataset
 
 
+def year_ticker():
+	if tick == 22:
+		return "2016 - Present"
+	elif tick == 19:
+		return "2012 - 2016"
+	elif tick == 13:
+		return "2008 - 2012"
+	elif tick == 8:
+		return "2004 - 2008"
+	elif tick == 4:
+		return "2000 - 2004"
+
 with open('data/google_derived_data.csv') as fin:
 	reader = csv.reader(fin)
 
-	category4 = []
-	category3 = []
-	category2 = []
-	category1 = [] 
-	category0 = []
+	year4 = []
+	year3 = []
+	year2 = []
+	year1 = [] 
+	year0 = []
+
+	ceo1 = []
+	ceo2 = []
+	ceo3 = []
 
 	i = 0
 	for row in reader:
@@ -52,39 +67,51 @@ with open('data/google_derived_data.csv') as fin:
 			continue 
 
 		year = row[1]
+
+		# Categorize Years
 		if int(year) < 2004:
-			category0.append(row) 
+			year0.append(row) 
 		elif int(year) < 2008:
-			category1.append(row) 
+			year1.append(row) 
 		elif int(year) < 2012:
-			category2.append(row) 
+			year2.append(row) 
 		elif int(year) < 2016:
-			category3.append(row) 
+			year3.append(row) 
 		elif int(year) < 2018:
-			category4.append(row)
+			year4.append(row)
+
+		# Categorize CEOs
+		if int(year) < 2018:
+			ceo3.append(row)
+		elif int(year) < 2015:
+			ceo2.append(row)
+		elif int(year) < 2011:
+			ceo1.append(row)
+
 
 		
-		
-	dataset1 = dataset_preparation(category4, 25)
-	dataset2 = dataset_preparation(category3, 19)
-	dataset3 = dataset_preparation(category2, 14)
-	dataset4 = dataset_preparation(category1, 10)
-	dataset5 = dataset_preparation(category0, 7)
+	year_dataset1 = dataset_preparation(year4, 25)
+	year_dataset2 = dataset_preparation(year3, 19)
+	year_dataset3 = dataset_preparation(year2, 14)
+	year_dataset4 = dataset_preparation(year1, 10)
+	year_dataset5 = dataset_preparation(year0, 7)
 	
-	rows = []
-	rows.extend(dataset1)
-	rows.extend(dataset2)
-	rows.extend(dataset3)
-	rows.extend(dataset4)
-	rows.extend(dataset5)
+	by_year = []
+	by_year.extend(year_dataset1)
+	by_year.extend(year_dataset2)
+	by_year.extend(year_dataset3)
+	by_year.extend(year_dataset4)
+	by_year.extend(year_dataset5)
 
 	header.append('x')
 	header.append('y')
 	header.append('count')
-	inpDF = pd.DataFrame(rows, columns = header)
+	yearDF = pd.DataFrame(by_year, columns = header)
 	
-	html_object = HeatMap(inpDF, x='x', y='y', values='count', stat=None, width=800, height=600, legend=False, palette=YlGn9)
-	
+	year_hover = HoverTool(tooltips=[("Company:", "@Google_company")])    
+	html_object = HeatMap(yearDF, x='x', y='y', values='count', stat=None, width=800, height=600, 
+												legend=False, palette=YlGn9, tools = [year_hover])
+	 
 	html_object.xaxis[0].ticker = FixedTicker(ticks=[25])
 	html_object.yaxis[0].ticker = FixedTicker(ticks=[22,19,13,8,4])
 
@@ -94,19 +121,7 @@ with open('data/google_derived_data.csv') as fin:
 	html_object.xaxis.axis_line_width = 1
 	html_object.yaxis.axis_line_width = 1
 
-	def ticker():
-		if tick == 22:
-			return "2016 - Present"
-		elif tick == 19:
-			return "2012 - 2016"
-		elif tick == 13:
-			return "2008 - 2012"
-		elif tick == 8:
-			return "2004 - 2008"
-		elif tick == 4:
-			return "2000 - 2004"
-
-	html_object.yaxis.formatter = FuncTickFormatter.from_py_func(ticker)	
+	html_object.yaxis.formatter = FuncTickFormatter.from_py_func(year_ticker)	
 
 	output_file("heatmap.html", title="Year Wise Category wise Number of Google Acquisitions")
 	show(html_object)
