@@ -1,0 +1,15 @@
+ceo = {	'chart_title' : "Google Acquisitions by CEOs",
+		'category' : 'ceo',
+		'data_config' : [{ 'name' : 'Eric Shmidt',
+						  	'year' : '(2001 - 2011)',
+							'starting_year' : 2000,
+							'dataset' : []},
+						  { 'name' : 'Larry Page',
+						    'year' : '(2011 - 2015)',
+							'starting_year' : 2011,
+							'dataset' : []},
+						  { 'name' : 'Sundar Pichai' ,
+			 	    		'year' : '(2015 - Present)',
+							'starting_year' : 2015,
+							'dataset' : []}]
+	}

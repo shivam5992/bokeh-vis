@@ -1,4 +1,4 @@
-Acquisition date,year,Google_company,Business,Category,Country list,Price,Used as or integrated with
+Acquisition_date,year,Google_company,Business,Category,Country,Price,Integrated_with
 2/12/2001,2001,Deja,Usenet,Communication,USA,,Google Groups
 9/20/2001,2001,Outride,Web search engine,Search,USA,,Google Personalized Search
 2/1/2003,2003,Pyra Labs,Weblog software,Publishing,USA,,Blogger
