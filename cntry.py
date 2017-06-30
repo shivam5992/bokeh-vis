@@ -26,3 +26,4 @@ p2.circle(x, factors, size=15, fill_color="orange", line_color="green", line_wid
 output_file("categorical1.html", title="categorical.py")
 
 show(p2)
+
