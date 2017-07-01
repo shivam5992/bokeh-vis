@@ -16,25 +16,10 @@ tab2 = Panel(child=p2, title="line")
 
 
 dataframe = pd.read_csv('data/year_category_count.csv')
-print dataframe
 
-exit(0)
 html_object = HeatMap(dataframe, x='Year', y='Category', values='Count', stat=None, sort_dim={'x': False}, width=1000)
 tab3 = Panel(child=html_object, title="heatmap")
 
 tabs = Tabs(tabs=[ tab1, tab2, tab3 ])
 
 show(tabs)
-
-
-# by date 
-# by CEO
-# by dollar amount 
-# by country 
-# by category 
-
-
-# avg gap between transition
-# insights everywhare 
-# https://www.geckoboard.com/tech-acquisitions/
-# http://bl.ocks.org/tjdecke/5558084

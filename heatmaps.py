@@ -5,7 +5,7 @@ from bokeh.palettes import Oranges9, Oranges9
 import pandas as pd 
 import csv 
 
-from configs import ceo, year
+from configs import ceo, year, category
 
 def dataset_preparation(row_data, upper_y, chunk_len = 20, max_color = 5):
 	input_data = list(reversed(row_data))
@@ -59,38 +59,53 @@ def read_dataset(chart_config):
 				continue 
 
 			year = int(row[1])
+			category = row[4] 
 
+
+			for each in data_config:
+				if chart_config['category'] == 'category':
+					if category == each['name']: 
+						each['dataset'].append(row)
+						break
+
+				# elif chart_config['category'] in ['ceo', 'year']:
+				# 	if year >= each['starting_year']:
+				# 		each['dataset'].append(row)
+				# 		break
+
+
+			
 			# Improve this !!!!!!!!!!!!!!!!!!!!!!!!!!
 
-			if len(data_config) == 3:
-				if year >= data_config[2]['starting_year']:
-					data_config[2]['dataset'].append(row)
-				elif year >= data_config[1]['starting_year']:
-					data_config[1]['dataset'].append(row)
-				else:
-					data_config[0]['dataset'].append(row)
+			# if len(data_config) == 3:
+			# 	if year >= data_config[2]['starting_year']:
+			# 		data_config[2]['dataset'].append(row)
+			# 	elif year >= data_config[1]['starting_year']:
+			# 		data_config[1]['dataset'].append(row)
+			# 	else:
+			# 		data_config[0]['dataset'].append(row)
 
-			elif len(data_config) == 4:
-				if year >= data_config[3]['starting_year']:
-					data_config[3]['dataset'].append(row)
-				elif year >= data_config[2]['starting_year']:
-					data_config[2]['dataset'].append(row)
-				elif year >= data_config[1]['starting_year']:
-					data_config[1]['dataset'].append(row)
-				else:
-					data_config[0]['dataset'].append(row)
+			# elif len(data_config) == 4:
+			# 	if year >= data_config[3]['starting_year']:
+			# 		data_config[3]['dataset'].append(row)
+			# 	elif year >= data_config[2]['starting_year']:
+			# 		data_config[2]['dataset'].append(row)
+			# 	elif year >= data_config[1]['starting_year']:
+			# 		data_config[1]['dataset'].append(row)
+			# 	else:
+			# 		data_config[0]['dataset'].append(row)
 
-			elif len(data_config) == 5:
-				if year >= data_config[4]['starting_year']:
-					data_config[4]['dataset'].append(row)
-				elif year >= data_config[3]['starting_year']:
-					data_config[3]['dataset'].append(row)
-				elif year >= data_config[2]['starting_year']:
-					data_config[2]['dataset'].append(row)
-				elif year >= data_config[1]['starting_year']:
-					data_config[1]['dataset'].append(row)
-				else:
-					data_config[0]['dataset'].append(row)
+			# elif len(data_config) == 5:
+			# 	if year >= data_config[4]['starting_year']:
+			# 		data_config[4]['dataset'].append(row)
+			# 	elif year >= data_config[3]['starting_year']:
+			# 		data_config[3]['dataset'].append(row)
+			# 	elif year >= data_config[2]['starting_year']:
+			# 		data_config[2]['dataset'].append(row)
+			# 	elif year >= data_config[1]['starting_year']:
+			# 		data_config[1]['dataset'].append(row)
+			# 	else:
+			# 		data_config[0]['dataset'].append(row)
 
 	chart_config['data_config'] = data_config
 	chart_config['header'] = header
@@ -110,8 +125,10 @@ def prepare_heatmap(chart_config):
 
 	# Not Working  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	hover_object = HoverTool(tooltips="""<div><span style="font-size: 17px;">@company</span></div>""")
+	# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 	html_object = HeatMap(inpDF, x='x', y='y', values='count',
-							     stat=None, width=1000, height=600, 
+							     stat=None, width=chart_config['width'], height=chart_config['height'], 
 								 legend=False, palette=Oranges9, tools=[hover_object],
 								 title=chart_config['chart_title'], toolbar_location="above")
  
@@ -120,5 +137,5 @@ def prepare_heatmap(chart_config):
 	show(html_object)
 
 if __name__ == '__main__':
-	chart_config = read_dataset(ceo)
+	chart_config = read_dataset(year)
 	prepare_heatmap(chart_config)
