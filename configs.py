@@ -139,17 +139,19 @@ category = { 'chart_title' : "Google Acquisitions by Category",
 	}
 
 
-# by dollar amount 
-# by country 
+# Univariate - 
+# countries  
 # avg gap between transition
+
+# Bivariates 
+
+# Trivariates 
+
 
 # insights everywhare 
 # https://www.geckoboard.com/tech-acquisitions/
 # http://bl.ocks.org/tjdecke/5558084
-
-
 # Create a storyline !!! 
 # fix scatter 
-
 # plot $ amounts on map 
 # time series of all companies 

@@ -1,5 +1,5 @@
-from bokeh.models import (HoverTool, FixedTicker, FuncTickFormatter, ColumnDataSource)
-from bokeh.charts import HeatMap, output_file, show
+from bokeh.models import (HoverTool, FixedTicker, FuncTickFormatter)
+from bokeh.charts import HeatMap, output_file, show, gridplot
 from bokeh.palettes import Oranges9, Oranges9
 
 import pandas as pd 
@@ -62,50 +62,32 @@ def read_dataset(chart_config):
 			category = row[4] 
 
 
-			for each in data_config:
-				if chart_config['category'] == 'category':
+			if chart_config['category'] == 'category':
+				for each in data_config:
 					if category == each['name']: 
 						each['dataset'].append(row)
 						break
 
-				# elif chart_config['category'] in ['ceo', 'year']:
-				# 	if year >= each['starting_year']:
-				# 		each['dataset'].append(row)
-				# 		break
+			elif chart_config['category'] == 'ceo':
+				if year >= data_config[2]['starting_year']:
+					data_config[2]['dataset'].append(row)
+				elif year >= data_config[1]['starting_year']:
+					data_config[1]['dataset'].append(row)
+				else:
+					data_config[0]['dataset'].append(row)
 
+			elif chart_config['category'] == 'year':
+				if year >= data_config[4]['starting_year']:
+					data_config[4]['dataset'].append(row)
+				elif year >= data_config[3]['starting_year']:
+					data_config[3]['dataset'].append(row)
+				elif year >= data_config[2]['starting_year']:
+					data_config[2]['dataset'].append(row)
+				elif year >= data_config[1]['starting_year']:
+					data_config[1]['dataset'].append(row)
+				else:
+					data_config[0]['dataset'].append(row)
 
-			
-			# Improve this !!!!!!!!!!!!!!!!!!!!!!!!!!
-
-			# if len(data_config) == 3:
-			# 	if year >= data_config[2]['starting_year']:
-			# 		data_config[2]['dataset'].append(row)
-			# 	elif year >= data_config[1]['starting_year']:
-			# 		data_config[1]['dataset'].append(row)
-			# 	else:
-			# 		data_config[0]['dataset'].append(row)
-
-			# elif len(data_config) == 4:
-			# 	if year >= data_config[3]['starting_year']:
-			# 		data_config[3]['dataset'].append(row)
-			# 	elif year >= data_config[2]['starting_year']:
-			# 		data_config[2]['dataset'].append(row)
-			# 	elif year >= data_config[1]['starting_year']:
-			# 		data_config[1]['dataset'].append(row)
-			# 	else:
-			# 		data_config[0]['dataset'].append(row)
-
-			# elif len(data_config) == 5:
-			# 	if year >= data_config[4]['starting_year']:
-			# 		data_config[4]['dataset'].append(row)
-			# 	elif year >= data_config[3]['starting_year']:
-			# 		data_config[3]['dataset'].append(row)
-			# 	elif year >= data_config[2]['starting_year']:
-			# 		data_config[2]['dataset'].append(row)
-			# 	elif year >= data_config[1]['starting_year']:
-			# 		data_config[1]['dataset'].append(row)
-			# 	else:
-			# 		data_config[0]['dataset'].append(row)
 
 	chart_config['data_config'] = data_config
 	chart_config['header'] = header
@@ -133,9 +115,16 @@ def prepare_heatmap(chart_config):
 								 title=chart_config['chart_title'], toolbar_location="above")
  
 	html_object = beautify_heatmap(html_object, ticks, ticker_func)
-	output_file("outputs/heatmap_" + chart_config['category'] + ".html", title=chart_config['chart_title'])
+	output_file("outputs/category_heatmap" + chart_config['category'] + ".html", title=chart_config['chart_title'])
 	show(html_object)
-
+	return html_object
+	
 if __name__ == '__main__':
 	chart_config = read_dataset(year)
-	prepare_heatmap(chart_config)
+	yr = prepare_heatmap(chart_config)
+
+	chart_config = read_dataset(ceo)
+	co = prepare_heatmap(chart_config)
+
+	chart_config = read_dataset(category)
+	cat = prepare_heatmap(chart_config)
