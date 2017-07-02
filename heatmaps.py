@@ -1,6 +1,6 @@
 from bokeh.models import (HoverTool, FixedTicker, FuncTickFormatter)
 from bokeh.charts import HeatMap, output_file, show, gridplot
-from bokeh.palettes import Oranges9, Oranges9
+from bokeh.palettes import Oranges9, RdYlGn
 
 import pandas as pd 
 import csv 
