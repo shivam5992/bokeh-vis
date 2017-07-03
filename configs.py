@@ -142,13 +142,11 @@ category = { 'chart_title' : "Google Acquisitions by Category",
 # Univariate 
 # countries  
 
-# timeseries
-# avg gap between transition
-# http://bokeh.pydata.org/en/latest/docs/gallery/stocks.html
-
-# Bivariates 
-# year wise category wise counts 
-# scattar 
+# x-axis : month year
+# y-axis : count in month year
+# color : category
+# shape : country 
+# size : dollar amount
 
 # insights everywhare 
 # https://www.geckoboard.com/tech-acquisitions/

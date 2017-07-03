@@ -1,6 +1,7 @@
 from bokeh.plotting import figure, show, output_file
 import pandas as pd 
 import numpy as np
+from datetime import datetime
 
 def formatted_date(date):
 	dat = date.split("/")[1]
@@ -13,7 +14,7 @@ def formatted_date(date):
 
 	return date.split("/")[2] + "-" + mn + "-" + dat
 
-def datetime(x):
+def np_datetime(x):
     return np.array(x, dtype=np.datetime64)
 
 def aggregate_date(dates):
@@ -38,15 +39,27 @@ def aggregate_date(dates):
 		times.append(key)
 		values.append(aggregated[key])
 
-	# real_dates = sorted(real)
-	# for i, key in enumerate(real_dates):
-	# 	try:
-	# 		print key - real_dates[i+1]
-	# 	except Exception as E:
-	# 		continue
+	time_differences = []
+	differences = []
+	real_dates = sorted(real)
+	for i, key in enumerate(real_dates):
+		try:
+			d1 = datetime.strptime(key, '%Y-%m-%d')
+			d2 = datetime.strptime(real_dates[i+1], '%Y-%m-%d')
 
-	times = datetime(times)
-	return times, values
+			time_differences.append(key)
+			difference = str(d2 - d1).split(",")[0].split()[0]
+			differences.append( difference )
+			
+		except Exception as E:
+			continue
+
+
+	times = np_datetime(times)
+	time_differences = np_datetime(time_differences)
+
+
+	return times, values, time_differences, differences
 
 
 
@@ -54,7 +67,7 @@ inpDF = pd.read_csv('data/google_derived_data.csv')
 inpDF['date'] = inpDF['Acquisition_date'].apply(lambda x : formatted_date(x))
 dates = list(inpDF['date'])
 
-dates, acquisitions = aggregate_date(dates)
+dates, acquisitions, times, differences = aggregate_date(dates)
 
 html_object = figure(x_axis_type="datetime", title="Number of acquisitions - Timeseries", width=1200, height=500)
 html_object.grid.grid_line_alpha = 0
@@ -62,8 +75,8 @@ html_object.xaxis.axis_label = 'Date'
 html_object.yaxis.axis_label = '# acquisitions'
 html_object.ygrid.band_fill_alpha = 0.1
 
-html_object.circle(dates, acquisitions, size=14, alpha=0.2, color='navy')
-html_object.circle(aapl_dates, aapl, size=4, legend='close', color='darkgrey', alpha=0.2)
+html_object.circle(dates, acquisitions, size=16, alpha=0.2, legend="# acquisitions", color='navy')
+html_object.line(times, differences, color='darkgrey', legend="Average Gap bw acquisitions", alpha=0.8)
 
 output_file("stocks.html", title="Number of acquisitions - Timeseries")
 show(html_object)
