@@ -140,7 +140,7 @@ category = { 'chart_title' : "Google Acquisitions by Category",
 
 
 # Univariate 
-# countries  
+# countries  - clustering
 
 # x-axis : month year
 # y-axis : count in month year
