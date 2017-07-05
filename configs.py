@@ -137,17 +137,3 @@ category = { 'chart_title' : "Google Acquisitions by Category",
 								'upper_index' : 4}],
 
 	}
-
-
-# Univariate 
-# countries  - clustering
-
-# x-axis : month year
-# y-axis : count in month year
-# color : category
-# shape : country 
-# size : dollar amount
-
-# insights everywhare 
-# https://www.geckoboard.com/tech-acquisitions/
-# http://bl.ocks.org/tjdecke/5558084
