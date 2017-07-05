@@ -1,9 +1,10 @@
-from bokeh.models import (HoverTool, FixedTicker, FuncTickFormatter)
+from bokeh.models import (HoverTool, FixedTicker, FuncTickFormatter, ColumnDataSource)
 from bokeh.charts import HeatMap, output_file, show, gridplot
-from bokeh.palettes import Oranges9, RdYlGn
+from bokeh.plotting import figure 
 
 import pandas as pd 
 import csv 
+from math import floor 
 
 from configs import ceo, year, category
 
@@ -39,6 +40,9 @@ def beautify_heatmap(html_object, ticks, ticker_func):
 	html_object.outline_line_width = 0
 	html_object.outline_line_color = "white"
 	html_object.yaxis.major_label_text_color = "black"
+
+	html_object.xgrid.grid_line_color = None
+	html_object.ygrid.grid_line_color = None
 
 	html_object.yaxis.formatter = FuncTickFormatter.from_py_func(ticker_func)	
 	return html_object
@@ -104,20 +108,33 @@ def prepare_heatmap(chart_config):
 		by_category.extend(data_config[i]['dataset'])
 
 	inpDF = pd.DataFrame(by_category, columns = chart_config['header'])
+	
+	X = inpDF.x.values 
+	Y = inpDF.y.values 
+	Count = inpDF['count'].values 
+	Desc = inpDF.Google_company.values 
 
-	# Not Working  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	hover_object = HoverTool(tooltips="""<div><span style="font-size: 17px;">@company</span></div>""")
-	# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	data = {'X':X,'Y':Y,'count':Count, 'desc':Desc, 'date':inpDF['Acquisition_date'].values, 'cat' : inpDF['Category'].values,
+				'country' : inpDF['Country'].values, 'amt':inpDF['Price'].values} 
 
-	html_object = HeatMap(inpDF, x='x', y='y', values='count',
-							     stat=None, width=chart_config['width'], height=chart_config['height'], 
-								 legend=False, palette=Oranges9, tools=[hover_object],
-								 title=chart_config['chart_title'], toolbar_location="above")
- 
+	palette = chart_config['col_ind']
+	N, min, max = len(palette), Count.min(), Count.max() 
+	data['color'] = [] 
+	for x in data['count']: 
+		ind = int(floor((x-min)/(max-min)*(N-1)) )
+
+		data['color'].append(palette[4][0]) 
+		
+	source = ColumnDataSource(data) 
+	hover = HoverTool( tooltips=[("Company:", "@desc"), ("Acquired Date:", "@date"), ("Category:", "@cat"),
+									("Country:", "@country"), ("Amount:", "@amt")] ) 
+	html_object = figure(tools=[hover], width=chart_config['width'], height=chart_config['height'], 
+								 title=chart_config['chart_title'], toolbar_location="above") 
+	html_object.rect(x='X', y='Y', width=1, height=1, fill_color='color', line_color="white", source=source) 
+
 	html_object = beautify_heatmap(html_object, ticks, ticker_func)
 	output_file("outputs/category_heatmap" + chart_config['category'] + ".html", title=chart_config['chart_title'])
 	show(html_object)
-	return html_object
 	
 if __name__ == '__main__':
 	chart_config = read_dataset(year)

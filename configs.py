@@ -45,12 +45,17 @@ def category_ticker():
 	elif tick == "4":
 		return "Communication"
 
+
+from bokeh.palettes import Blues, Greens,  Reds
+
+
 ceo = {	'chart_title' : "Google Acquisitions by CEOs",
 		'category' : 'ceo',
+		'col_ind' : Reds,
 		'ticks' : [23,16,11],
 		'ticker_func' : ceo_ticker,
 		'width' : 800,
-		'height' : 600,
+		'height' : 500,
 		'data_config' : [{ 'name' : 'Eric Shmidt (2001 - 2011)',
 							'starting_year' : 2000,
 							'dataset' : [],
@@ -67,6 +72,7 @@ ceo = {	'chart_title' : "Google Acquisitions by CEOs",
 
 year = {'chart_title' : "Google Acquisitions by Years",
 		'category' : 'year',
+		'col_ind' : Greens,
 		'ticks'  : [22,18,12, 7, 4],
 		'ticker_func' : year_ticker,
 		'width' : 800,
@@ -97,8 +103,9 @@ category = { 'chart_title' : "Google Acquisitions by Category",
 			 'category' : 'category',
 			 'ticks' : [48,43,39,35,31,27,23,19,15,11,7,4],
 			 'ticker_func' : category_ticker,
-			 'width' : 800,
+			 'width' : 600,
 			 'height' : 1000,
+			 'col_ind' : Blues,
 			 'data_config' : [{ 'name' : 'AI',
 								'dataset' : [],
 								'upper_index' : 48},
