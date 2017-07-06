@@ -4,7 +4,7 @@ from bokeh.models import HoverTool, FixedTicker
 import pandas as pd 
 
 ## read the data from CSV and create DF
-inpDF = pd.read_csv("data/google_derived_data.csv")
+inpDF = pd.read_csv("data/dataset.csv")
 
 ## Selected colors 
 colors = {'Communication' : '#ff003b', 
@@ -76,7 +76,7 @@ hover = HoverTool(tooltips="""<div>
         			<span style="font-size: 12px;">@desc3</span><br>
         			</div>""")
 
-output_file("google.html")
+output_file("outputs/multivariate.html")
 p = figure(plot_width=1500, plot_height=900, tools=[hover], title="Google Acquisitions over time")
 
 shapes = {}

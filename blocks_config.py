@@ -19,6 +19,9 @@ def year_ticker():
 	elif tick == "4":
 		return "2000 - 2004"
 
+def compl_ticker():
+	return "Companies"
+
 def category_ticker():
 	if tick == "48":
 		return "AI"
@@ -46,7 +49,7 @@ def category_ticker():
 		return "Communication"
 
 
-from bokeh.palettes import Blues, Greens,  Reds
+from bokeh.palettes import Blues, Greens,  Reds, PuRd
 
 
 ceo = {	'chart_title' : "Google Acquisitions by CEOs",
@@ -143,4 +146,16 @@ category = { 'chart_title' : "Google Acquisitions by Category",
 								'dataset' : [],
 								'upper_index' : 4}],
 
+	}
+
+compl = {'chart_title' : "All Google Acquisitions",
+		'category' : 'compl',
+		'col_ind' : PuRd,
+		'ticks'  : [20],
+		'ticker_func' : compl_ticker,
+		'width' : 600,
+		'height' : 400,
+		'data_config' : [{  'starting_year' : 2000,
+							'dataset' : [],
+							'upper_index' : 25}]
 	}

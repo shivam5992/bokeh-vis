@@ -6,12 +6,11 @@ import pandas as pd
 import csv 
 from math import floor 
 
-from configs import ceo, year, category
+from blocks_config import ceo, year, category, compl
 
 def dataset_preparation(row_data, upper_y, chunk_len = 20, max_color = 5):
 	input_data = list(reversed(row_data))
 	chunks = [input_data[i:i + chunk_len] for i in xrange(0, len(input_data), chunk_len)]
-
 	dataset = []
 	for y_index, chunk in enumerate(chunks):
 		for x_index, row in enumerate(chunk):
@@ -35,6 +34,7 @@ def beautify_heatmap(html_object, ticks, ticker_func):
 
 	html_object.xaxis.axis_label = ""
 	html_object.yaxis.axis_label = ""
+	
 	html_object.xaxis.visible = False
 
 	html_object.outline_line_width = 0
@@ -50,7 +50,7 @@ def beautify_heatmap(html_object, ticks, ticker_func):
 def read_dataset(chart_config):
 	data_config = chart_config['data_config']
 
-	with open('data/google_derived_data.csv') as fin:
+	with open('data/dataset.csv') as fin:
 		index = 0 
 
 		reader = csv.reader(fin)
@@ -91,6 +91,9 @@ def read_dataset(chart_config):
 					data_config[1]['dataset'].append(row)
 				else:
 					data_config[0]['dataset'].append(row)
+
+			elif chart_config['category'] == 'compl':
+				data_config[0]['dataset'].append(row)
 
 
 	chart_config['data_config'] = data_config
@@ -133,10 +136,13 @@ def prepare_heatmap(chart_config):
 	html_object.rect(x='X', y='Y', width=1, height=1, fill_color='color', line_color="white", source=source) 
 
 	html_object = beautify_heatmap(html_object, ticks, ticker_func)
-	output_file("outputs/category_heatmap" + chart_config['category'] + ".html", title=chart_config['chart_title'])
+	output_file("outputs/block_" + chart_config['category'] + ".html", title=chart_config['chart_title'])
 	show(html_object)
 	
 if __name__ == '__main__':
+	chart_config = read_dataset(compl)
+	compl = prepare_heatmap(chart_config)
+
 	chart_config = read_dataset(year)
 	yr = prepare_heatmap(chart_config)
 

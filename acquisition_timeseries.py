@@ -63,7 +63,7 @@ def aggregate_date(dates):
 
 
 
-inpDF = pd.read_csv('data/google_derived_data.csv')
+inpDF = pd.read_csv('data/dataset.csv')
 inpDF['date'] = inpDF['Acquisition_date'].apply(lambda x : formatted_date(x))
 dates = list(inpDF['date'])
 
@@ -76,7 +76,7 @@ html_object.yaxis.axis_label = '# acquisitions'
 html_object.ygrid.band_fill_alpha = 0.1
 
 html_object.circle(dates, acquisitions, size=16, alpha=0.2, legend="# acquisitions", color='navy')
-# html_object.line(times, differences, color='darkgrey', legend="Average Gap bw acquisitions", alpha=0.8)
+html_object.line(times, differences, color='darkgrey', legend="Average Gap bw acquisitions", alpha=0.8)
 
-output_file("timeseries.html", title="Number of acquisitions - Timeseries")
+output_file("outputs/gap_timeseries.html", title="Number of acquisitions - Timeseries")
 show(html_object)
