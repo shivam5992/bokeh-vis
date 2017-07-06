@@ -1,10 +1,16 @@
+"""
+python script that generates multivariate graph - 
+x-axis, y-axis, color, size, shape
+
+"""
+
 from bokeh.plotting import figure, output_file
 from bokeh.plotting import show, ColumnDataSource
 from bokeh.models import HoverTool, FixedTicker
 import pandas as pd 
 
 ## read the data from CSV and create DF
-inpDF = pd.read_csv("data/dataset.csv")
+inpDF = pd.read_csv("data/acquisition_dataset.csv")
 
 ## Selected colors 
 colors = {'Communication' : '#ff003b', 
@@ -31,7 +37,6 @@ desc2 = []
 desc3 = []
 for i,row in inpDF.iterrows():
 	vals = list(row)
-
 	date = vals[0]
 	
 	month = date.split("/")[0]
@@ -48,6 +53,7 @@ for i,row in inpDF.iterrows():
 	dollar = dollar.replace(',',"").replace("$","")
 	dollar = int(dollar) * 1.0 / 10000
 
+	# fix custom data points
 	if dollar in [165000.0, 310000.0, 320000.0, 1250000.0]:
 		dollar = float(dollar)/100 + 96600
 
@@ -61,6 +67,7 @@ for i,row in inpDF.iterrows():
 	shape.append(continent)
 	color.append(colors[category])
 	size.append(dollar)
+	
 	descr1 = "Company: " + str(row[2]) + " (" + str(row[3]) + "), Category: " +row[4]
 	descr2 = "Acquired Date: " + str(row[1]) + ", Amount: " + amt
 	descr3 = "Country: " + str(row[5]) + ", Region: " + str(row[-1])

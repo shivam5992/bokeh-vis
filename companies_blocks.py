@@ -1,13 +1,21 @@
-from bokeh.models import (HoverTool, FixedTicker, FuncTickFormatter, ColumnDataSource)
-from bokeh.charts import HeatMap, output_file, show, gridplot
+"""
+python script that generates block charts for different datapoints.
+the script and the graphs are controlled by the config provided 
+along with it.
+
+"""
+
+from bokeh.models import HoverTool, FixedTicker, FuncTickFormatter, ColumnDataSource
+from blocks_config import ceo, year, category, compl
+from bokeh.charts import output_file
 from bokeh.plotting import figure 
 
+from math import floor 
 import pandas as pd 
 import csv 
-from math import floor 
 
-from blocks_config import ceo, year, category, compl
 
+# utility function to prepare the required dataset : adding x, y and z coordinates to each row
 def dataset_preparation(row_data, upper_y, chunk_len = 20, max_color = 5):
 	input_data = list(reversed(row_data))
 	chunks = [input_data[i:i + chunk_len] for i in xrange(0, len(input_data), chunk_len)]
@@ -28,8 +36,8 @@ def dataset_preparation(row_data, upper_y, chunk_len = 20, max_color = 5):
 			dataset.append(updated_row)
 	return dataset
 
-
-def beautify_heatmap(html_object, ticks, ticker_func):
+# function to adjust beautification of blocks chart
+def beautify_blocks(html_object, ticks, ticker_func):
 	html_object.yaxis[0].ticker = FixedTicker(ticks = ticks)
 
 	html_object.xaxis.axis_label = ""
@@ -47,10 +55,11 @@ def beautify_heatmap(html_object, ticks, ticker_func):
 	html_object.yaxis.formatter = FuncTickFormatter.from_py_func(ticker_func)	
 	return html_object
 
+# function to read the dataset and return required dataset
 def read_dataset(chart_config):
 	data_config = chart_config['data_config']
 
-	with open('data/dataset.csv') as fin:
+	with open('data/acquisition_dataset.csv') as fin:
 		index = 0 
 
 		reader = csv.reader(fin)
@@ -64,7 +73,6 @@ def read_dataset(chart_config):
 
 			year = int(row[1])
 			category = row[4] 
-
 
 			if chart_config['category'] == 'category':
 				for each in data_config:
@@ -100,7 +108,8 @@ def read_dataset(chart_config):
 	chart_config['header'] = header
 	return chart_config
 
-def prepare_heatmap(chart_config):
+# master function to prepare block charts using the configurations
+def prepare_blocks(chart_config):
 	data_config = chart_config['data_config']
 	ticks = chart_config['ticks']
 	ticker_func = chart_config['ticker_func']
@@ -135,19 +144,19 @@ def prepare_heatmap(chart_config):
 								 title=chart_config['chart_title'], toolbar_location="above") 
 	html_object.rect(x='X', y='Y', width=1, height=1, fill_color='color', line_color="white", source=source) 
 
-	html_object = beautify_heatmap(html_object, ticks, ticker_func)
+	html_object = beautify_blocks(html_object, ticks, ticker_func)
 	output_file("outputs/block_" + chart_config['category'] + ".html", title=chart_config['chart_title'])
-	show(html_object)
+
 	
 if __name__ == '__main__':
 	chart_config = read_dataset(compl)
-	compl = prepare_heatmap(chart_config)
+	compl = prepare_blocks(chart_config)
 
 	chart_config = read_dataset(year)
-	yr = prepare_heatmap(chart_config)
+	yr = prepare_blocks(chart_config)
 
 	chart_config = read_dataset(ceo)
-	co = prepare_heatmap(chart_config)
+	co = prepare_blocks(chart_config)
 
 	chart_config = read_dataset(category)
-	cat = prepare_heatmap(chart_config)
+	cat = prepare_blocks(chart_config)

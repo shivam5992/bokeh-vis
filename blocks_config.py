@@ -1,3 +1,9 @@
+"""
+this script contains utility functions required to create 
+blocks
+
+"""
+
 def ceo_ticker():
 	if tick == "23":
 		return "Sundar Pichai (2015 - Present)"

@@ -1,28 +1,42 @@
+"""
+python script that generates timeseries plot - line and circle
+using bokeh library.
+
+line : gap between the two dates
+circle : repersenting every node and its count
+"""
+
 from bokeh.plotting import figure, show, output_file
+from datetime import datetime
 import pandas as pd 
 import numpy as np
-from datetime import datetime
 
+
+# Utility function to format date
 def formatted_date(date):
-	dat = date.split("/")[1]
-	if int(dat) < 10:
-		dat = "0" + dat
+	year = date.split("/")[2]
 
-	mn = date.split("/")[0]
-	if int(mn) < 10:
-		mn = "0" + mn
+	day = date.split("/")[1]
+	day = "0"+day if int(day)<10 else day
 
-	return date.split("/")[2] + "-" + mn + "-" + dat
+	month = date.split("/")[0]
+	month = "0"+month if int(month)<10 else month
+	
+	reformed_data = year + "-" + month + "-" + day
+	return reformed_data
 
+
+# Utility function to convert a list of dates into np array of dates
 def np_datetime(x):
     return np.array(x, dtype=np.datetime64)
 
+
+# Function to aggregate datapoints on the basis of dates
 def aggregate_date(dates):
 	aggregated = {}
 	real = {}
 	for date in dates:
 		ymd = date.split("-")
-		ym = ymd[0] + ymd[1]
 		padded = ymd[0] + "-" + ymd[1] + "-" + "01"
 
 		if padded not in aggregated:
@@ -39,6 +53,7 @@ def aggregate_date(dates):
 		times.append(key)
 		values.append(aggregated[key])
 
+	# code to compute time gap between two dats
 	time_differences = []
 	differences = []
 	real_dates = sorted(real)
@@ -50,33 +65,36 @@ def aggregate_date(dates):
 			time_differences.append(key)
 			difference = str(d2 - d1).split(",")[0].split()[0]
 			differences.append( difference )
-			
-		except Exception as E:
+		except:
 			continue
-
 
 	times = np_datetime(times)
 	time_differences = np_datetime(time_differences)
 
-
 	return times, values, time_differences, differences
 
+# Function to generate time series plot
+def generate_plot(line = False):
+	inpDF = pd.read_csv('data/acquisition_dataset.csv')
+
+	inpDF['date'] = inpDF['Acquisition_date'].apply(lambda x : formatted_date(x))
+	dates = list(inpDF['date'])
+
+	dates, acquisitions, times, differences = aggregate_date(dates)
+
+	# create bokeh html plot
+	html_object = figure(x_axis_type="datetime", title="Number of acquisitions - Timeseries", width=1200, height=500)
+	html_object.grid.grid_line_alpha = 0
+	html_object.xaxis.axis_label = 'Date'
+	html_object.yaxis.axis_label = '# acquisitions'
+	html_object.ygrid.band_fill_alpha = 0.1
+
+	html_object.circle(dates, acquisitions, size=16, alpha=0.2, legend="# acquisitions", color='navy')
+	if line:
+		html_object.line(times, differences, color='darkgrey', legend="Average Gap bw acquisitions", alpha=0.8)
+
+	output_file("outputs/gap_timeseries.html", title="Number of acquisitions - Timeseries")
 
 
-inpDF = pd.read_csv('data/dataset.csv')
-inpDF['date'] = inpDF['Acquisition_date'].apply(lambda x : formatted_date(x))
-dates = list(inpDF['date'])
-
-dates, acquisitions, times, differences = aggregate_date(dates)
-
-html_object = figure(x_axis_type="datetime", title="Number of acquisitions - Timeseries", width=1200, height=500)
-html_object.grid.grid_line_alpha = 0
-html_object.xaxis.axis_label = 'Date'
-html_object.yaxis.axis_label = '# acquisitions'
-html_object.ygrid.band_fill_alpha = 0.1
-
-html_object.circle(dates, acquisitions, size=16, alpha=0.2, legend="# acquisitions", color='navy')
-html_object.line(times, differences, color='darkgrey', legend="Average Gap bw acquisitions", alpha=0.8)
-
-output_file("outputs/gap_timeseries.html", title="Number of acquisitions - Timeseries")
-show(html_object)
+if __name__ == '__main__':
+	generate_plot(line = True)
